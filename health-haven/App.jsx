@@ -57,14 +57,15 @@ export default function App() {
         });
 
         console.log(formData)
-        /*
-        const response = await fetch(config.CLOUD_FUNCTION_URL, {
+    
+        const response = await fetch('https://adoption-ff-poem-mi.trycloudflare.com/stt', {
             method: 'POST',
             body: formData
         });
         const data = await response.json();
-        */
-        //console.log(data);
+        
+        console.log(data);
+
        //setQuery(data.transcript);
     } catch(error) {
         console.log('There was an error reading file', error);
@@ -88,8 +89,7 @@ export default function App() {
 
     console.log('Starting recording..')
 
-    const { recording } = await Audio.Recording.createAsync( Audio.RecordingOptionsPresets.HIGH_QUALITY
-      );
+    const { recording } = await Audio.Recording.createAsync(recordingOptions);
 
     setRecording(recording)
     setIsRecording(true);
