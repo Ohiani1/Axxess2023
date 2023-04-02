@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect,useRef } from 'react'
 import { StyleSheet, Text, View, Button, SafeAreaView, TouchableOpacity } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { Audio } from 'expo-av'
 import * as FileSystem from 'expo-file-system'
+import LottieView from 'lottie-react-native'
 
 const recordingOptions = {
   // android not currently in use, but parameters are required
@@ -27,6 +28,16 @@ const recordingOptions = {
 };
 
 export default function App() {
+
+  const animation = useRef(null);
+
+  const onpress = () => {
+    animation.current.play();
+  }
+
+  const pressOut = () => {
+    animation.current.pause();
+  }
 
   const [recording, setRecording] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
@@ -129,43 +140,52 @@ const resetRecording = () => {
 };
 
 const handleOnPressIn = () => {
+    onpress();
     startRecording();
 };
 
 const handleOnPressOut = () => {
-    stopRecording();
-    getTranscription();
+  pressOut();
+  stopRecording();
+  getTranscription();
 };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text>DoctorAI</Text>
-      {isRecording &&
+    <View style={styles.screenTop}>
+      <SafeAreaView style={styles.header}>
+        <Text>hello</Text>
+      </SafeAreaView>
+      <View style={styles.container}>
+
+        <LottieView
+          ref={animation}
+          style={{width:'110%', marginBottom:"-70%", marginTop: "-20%"}}
+          source={require('./animations/audioLines.json')}
+        />
+        <TouchableOpacity style={styles.record}
+        onPressIn={handleOnPressIn}
+        onPressOut={handleOnPressOut}
+        >
         
-        <FontAwesome name="microphone" size={32} color="#48C9B0" />
-       
-      }
-      {!isRecording &&
-          <FontAwesome name="microphone" size={32} color="#48C9B0" />
-      }
-      <TouchableOpacity style={styles.record}
-      onPressIn={handleOnPressIn}
-      onPressOut={handleOnPressOut}
-      >
-      
-      <Text style={styles.recordingText}>Click to start conversation</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+        <FontAwesome name="microphone" size={40} color="white" />
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 }
 
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    width:'100%',
+    height:'80%',
+    borderTopRightRadius:15,
+    borderTopLeftRadius:15,
+    position:'absolute',
+    bottom:1
   },
 
   recordingText: {
@@ -174,13 +194,26 @@ const styles = StyleSheet.create({
 
   },
   record: {
-    marginTop: 30,
-    padding: 10,
-    justifyContent: 'center',
-    backgroundColor: '#4F7942',
-    height: 60,
-    borderRadius: 20,
-
-
+    alignItems:'center',
+    justifyContent:'center',
+    height: 100,
+    width:100,
+    borderRadius:1000,
+    backgroundColor: '#333333',
+    shadowRadius: 10,
+    shadowOpacity:0.6,
+  },
+  screenTop: {
+    backgroundColor:'#b9243c',
+    width: '100%',
+    height:'100%'
+  },
+  header: {
+    justifyContent:'space-around',
+    paddingHorizontal:15,
+    width:'100%'
+  },
+  text: {
+      fontStyle:'normal',
   }
 });
