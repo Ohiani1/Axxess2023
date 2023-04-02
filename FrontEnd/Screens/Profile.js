@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, TextInput, ScrollView, Pressable } from 'react-native'
+import { StyleSheet,Image, Text, View, SafeAreaView, TouchableOpacity, TextInput, ScrollView, Pressable } from 'react-native'
 import RadioButtonGroup, { RadioButtonItem } from 'expo-radio-button'
 import Checkbox from 'expo-checkbox'
 
@@ -52,6 +52,9 @@ export default function ProfileScreen(){
   
 return(
 <SafeAreaView style={styles.container}>
+    <View style={styles.logoContainer}>
+        <Image style={styles.logo} source={require('../assets/logo.png')}/>
+    </View>
     <View style={styles.innerContainer}>
     <ScrollView
     showsVerticalScrollIndicator={false} >
@@ -372,6 +375,16 @@ const styles = StyleSheet.create({
         height: 50,
         justifyContent: 'center', 
         borderRadius: 20 
+    },
+    logoContainer: {
+        width: 70,
+        height: 50,
+        position:'absolute',
+        top:50
+    },
+    logo: {
+        width:'100%',
+        height:'100%'
     }
 
 

@@ -4,7 +4,8 @@ import { FontAwesome5 } from '@expo/vector-icons'
 import { MaterialIcons } from '@expo/vector-icons'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
-function AccountScreen(){
+
+function AccountScreen({navigation}){
     return(
         <SafeAreaView style={styles.container}>
         <View style={styles.logoContainer}>
@@ -16,7 +17,7 @@ function AccountScreen(){
             <Image style={styles.person} source={require('../assets/person.jpg')}/>
         </View>
         <View style={styles.widgetSection}>
-        <TouchableOpacity style={styles.widget} onPress={navigation}>
+        <TouchableOpacity style={styles.widget} onPress={() => navigation.navigate('History')}>
         <Text style={styles.widgetTitle}>My Medical History</Text>
         <FontAwesome5 name="book-medical" size={36} color='#B9243C'
         style={{
@@ -111,10 +112,10 @@ const styles = StyleSheet.create({
         borderWidth:3
     },
     logoContainer: {
-        width: 100,
-        height: 100,
+        width: 70,
+        height: 50,
         position:'absolute',
-        top:1
+        top:50
     },
     logo: {
         width:'100%',

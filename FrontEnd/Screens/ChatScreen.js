@@ -1,8 +1,12 @@
 import React, { useState, useEffect,useRef } from 'react'
-import { StyleSheet, Text, View, Button, SafeAreaView, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, Text, View, Button, SafeAreaView, TouchableOpacity, Image, Modal, Platform, Alert } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import LottieView from 'lottie-react-native'
 import { Audio } from 'expo-av'
+import SchedulerScreen from './SchedulerScreen'
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const recordingOptions = {
     // android not currently in use, but parameters are required
@@ -40,9 +44,38 @@ function ChatScreen(props){
     const [recording, setRecording] = useState(null);
     const [isFetching, setIsFetching] = useState(false);
     const [isRecording, setIsRecording] = useState(false);
-  
+    const [ending, setEnding] = useState(false)
+    const [seeText, setSeeText] = useState(true);
+    const [sound, setSound] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [date, setDate] = useState(new Date());
+    const [mode, setMode] = useState('date');
+    const [show, setShow] = useState(true);
+    const [text, setText] = useState('Empty');
+    const [uploadVisible, setUploadVisible] = useState(false);
+    const [stringDate, setStringDate] = useState((date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear());
+    const [stringTime, setStringTime] = useState(date.getHours() + ':' + date.getMinutes());
+    
+
+
+    async function playSound(soundFile) {
+
+      console.log('Loading sound...')
+
+      const { sound } = await Audio.Sound.createAsync({uri: soundFile})
+
+      setSound(sound)
+
+      console.log('Playing Sound')
+
+      await sound.playAsync()
+
     }
-  
+    useEffect(() =>{
+      console.log(ending)
+    }, [ending])
+
+
     useEffect(() => {
       return sound ? () => {
         console.log('Unloading Sound')
@@ -77,6 +110,22 @@ function ChatScreen(props){
           const data = await response.json();
 
           url = data.url
+
+          console.log(`bot asked question: ${data.bot}`)
+
+          if(data.bot.toLowerCase().includes("appointment")){
+ 
+            setEnding(true);
+          }
+
+          const user = data.user
+          console.log(user)
+          
+          if (ending && data.user.toLowerCase().includes("yes"))
+          {
+            setModalVisible(true);
+          }
+        
 
           console.log(url);
 
@@ -157,6 +206,44 @@ function ChatScreen(props){
     getTranscription();
   };
 
+  const onChange = (event, SelectedDate) => {
+    const currentDate = SelectedDate || date;
+    setShow(Platform.OS === 'ios');
+    setDate(currentDate);
+    let minString = '';
+
+
+    let tempDate = new Date(currentDate);
+    if (tempDate.getMinutes() < 10)
+    {
+        minString = '0';
+    }
+    let fDate = (tempDate.getMonth() + 1) + "/" + tempDate.getDate() + "/" +tempDate.getFullYear();
+    let fTime =  tempDate.getHours() + ':' + minString + tempDate.getMinutes();
+    
+    setStringDate(fDate);
+    setStringTime(fTime);
+
+    console.log(fDate + '\n' + fTime)
+
+}
+
+const showAlert = () => {
+  Alert.alert(
+      'Confirm Appointment',
+      `Confirm your appointment on ${stringDate} at ${stringTime}`,
+      [
+          {
+              text:'Yes',
+              onPress: () => setUploadVisible(true)
+          },
+          {
+              text:'Cancel',
+          }
+      ]
+  );
+}
+
     return(
         <View style={styles.screenTop}>
             <SafeAreaView style={styles.header}>
@@ -180,6 +267,54 @@ function ChatScreen(props){
                 </TouchableOpacity>
                 {seeText && <Text>Press and Hold to Begin!</Text>}
             </View>
+            <Modal visible={modalVisible}>
+                <View style={styles.newContainer}>
+                <Text style={{fontWeight: 'bold', fontSize:23, marginBottom: 20}}>Let's book your appointment!</Text>
+                <View style={{alignItems:'center'}}>
+                    <Text style={{fontSize:20, marginBottom: 10}}>Pick a date you will available</Text>
+                    <FontAwesome name="arrow-circle-down" size={40} color="#b9243c" style={{marginBottom:10}}/>
+                    <DateTimePicker
+                        testID='dateTimePicker'
+                        value={date}
+                        mode={'date'}
+                        is24Hour={true}
+                        display='default'
+                        onChange={onChange}
+                    />
+                </View>
+                <View style={{alignItems:'center'}}> 
+                    <Text style={{fontSize:20, marginBottom: 10, marginTop: 20}}>Pick a date you will available</Text>
+                    <FontAwesome name="arrow-circle-down" size={40} color="#b9243c" style={{marginBottom:10}}/>
+                    <DateTimePicker
+                        testID='dateTimePicker'
+                        value={date}
+                        mode={'time'}
+                        is24Hour={true}
+                        display='default'
+                        onChange={onChange}
+                    />
+                </View>
+                <TouchableOpacity style={styles.bookButton} onPress={showAlert}>
+                    <Text style={{fontWeight: 'bold', fontSize:23, color:'white'}}>BOOK</Text>
+                </TouchableOpacity>
+
+                <Modal visible={uploadVisible}>
+                    <View style={styles.modalContainer}>
+                        <LottieView
+                                autoPlay
+                                loop={false}
+                                onAnimationFinish={()=> {
+                                    setUploadVisible(false)
+                                    setModalVisible(false);
+                                }}
+                                source={require('../animations/hitCrsLRmd.json')}
+                                style={styles.animation}
+                        />
+                    </View>
+                </Modal>
+             </View>
+
+            </Modal>
         </View>
     )
 }
@@ -245,7 +380,31 @@ const styles = StyleSheet.create({
       color:'white',
       marginLeft:"8%",
       marginTop:"-3%",
-    }
+    },
+    newContainer: {
+      flex:1,
+      backgroundColor: '#fff',
+      alignItems:'center',
+      justifyContent:'center',
+      paddingHorizontal:10
+  },
+  bookButton: {
+      width:'60%',
+      height:'8%',
+      backgroundColor:'#b9243c',
+      borderRadius:20,
+      marginTop: 50,
+      justifyContent:'center',
+      alignItems:'center'
+  },
+  modalContainer: {
+      alignItems:'center',
+      flex:1,
+      justifyContent:'center'
+  },
+  animation: {
+      width: 300
+  }
   });
   
 

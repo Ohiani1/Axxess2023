@@ -11,6 +11,7 @@ import AccountScreen from './Screens/AccountScreen'
 import SchedulerScreen from './Screens/SchedulerScreen'
 import ProfileScreen from './Screens/Profile'
 import SchedulerButton from './ScheduleButton'
+import AccountNavigator from './Navigators/AccountNavigator'
 
 
 const Tab = createBottomTabNavigator();
@@ -32,7 +33,7 @@ export default function App() {
             <MaterialIcons name="keyboard-voice" size={30} color="#b9243c"/>
           )
         })}/>
-        <Tab.Screen name='Account' component={AccountScreen} options={{
+        <Tab.Screen name='Account' component={AccountNavigator} options={{
           tabBarIcon: ({size, color}) => (
             <MaterialCommunityIcons name="account" size={30} color="#b9243c" />
           )

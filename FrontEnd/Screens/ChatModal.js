@@ -6,7 +6,7 @@ import LottieView from 'lottie-react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-function SchedulerScreen({visible = true}){
+function ChatModal({visible}){
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(true);
@@ -132,4 +132,4 @@ const styles = StyleSheet.create({
         width: 300
     }
 })
-export default SchedulerScreen;
+export default ChatModal;
