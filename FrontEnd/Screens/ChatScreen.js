@@ -41,6 +41,7 @@ function ChatScreen(props){
     const [isFetching, setIsFetching] = useState(false);
     const [isRecording, setIsRecording] = useState(false);
     const [siri, setSiri] = useState(false);
+    const [seeText, setSeeText] = useState(true);
   
     const deleteRecordingFile = async () => {
       try {
@@ -140,11 +141,13 @@ function ChatScreen(props){
   
   const handleOnPressIn = () => {
     onpress();  
+    setSeeText(false);
     startRecording();
   };
   
   const handleOnPressOut = () => {
-    pressOut()
+    pressOut();
+    setSeeText(true);
     stopRecording();
     getTranscription();
   };
@@ -170,6 +173,7 @@ function ChatScreen(props){
                 
                 <FontAwesome name="microphone" size={40} color="white" />
                 </TouchableOpacity>
+                {seeText && <Text>Press and Hold to Begin!</Text>}
             </View>
         </View>
     )
@@ -202,6 +206,7 @@ const styles = StyleSheet.create({
       backgroundColor: '#333333',
       shadowRadius: 10,
       shadowOpacity:0.6,
+      marginBottom:7
     },
     screenTop: {
       backgroundColor:'#b9243c',

@@ -7,13 +7,16 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 function AccountScreen(){
     return(
         <SafeAreaView style={styles.container}>
+        <View style={styles.logoContainer}>
+            <Image style={styles.logo} source={require('../assets/logo.png')}/>
+        </View>
         <View
         style={styles.innerContainer}>
         <View style={styles.profile}>
             <Image style={styles.person} source={require('../assets/person.jpg')}/>
         </View>
         <View style={styles.widgetSection}>
-        <TouchableOpacity style={styles.widget}>
+        <TouchableOpacity style={styles.widget} onPress={navigation}>
         <Text style={styles.widgetTitle}>My Medical History</Text>
         <FontAwesome5 name="book-medical" size={36} color='#B9243C'
         style={{
@@ -96,18 +99,26 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         height: 50,
         backgroundColor: '#F1F1F1',
-
     },
 
     widgetSection: {
         marginTop: 50,
-     
     },
     person: {
         width:'100%',
         height:'100%',
         borderRadius:"100%",
         borderWidth:3
+    },
+    logoContainer: {
+        width: 100,
+        height: 100,
+        position:'absolute',
+        top:1
+    },
+    logo: {
+        width:'100%',
+        height:'100%'
     }
 })
 
