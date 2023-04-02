@@ -3,8 +3,10 @@ import {useState} from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { FontAwesome } from '@expo/vector-icons';
 import LottieView from 'lottie-react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-function SchedulerScreen({navigation}){
+function SchedulerScreen(props){
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(true);
@@ -18,10 +20,17 @@ function SchedulerScreen({navigation}){
         const currentDate = SelectedDate || date;
         setShow(Platform.OS === 'ios');
         setDate(currentDate);
+        let minString = '';
+
 
         let tempDate = new Date(currentDate);
+        if (tempDate.getMinutes() < 10)
+        {
+            minString = '0';
+        }
         let fDate = (tempDate.getMonth() + 1) + "/" + tempDate.getDate() + "/" +tempDate.getFullYear();
-        let fTime =  tempDate.getHours() + ':' + tempDate.getMinutes();
+        let fTime =  tempDate.getHours() + ':' + minString + tempDate.getMinutes();
+        
         setStringDate(fDate);
         setStringTime(fTime);
 
@@ -82,7 +91,7 @@ function SchedulerScreen({navigation}){
                     <LottieView
                             autoPlay
                             loop={false}
-                            onAnimationFinish={()=> navigation.navigate('Chat')}
+                            onAnimationFinish={()=> setUploadVisible(false)}
                             source={require('../animations/hitCrsLRmd.json')}
                             style={styles.animation}
                     />

@@ -1,4 +1,4 @@
-import {View, SafeAreaView, StyleSheet, TouchableOpacity, Text} from'react-native'
+import {View, SafeAreaView, StyleSheet, TouchableOpacity, Text, Image} from'react-native'
 import { Feather } from '@expo/vector-icons'
 import { FontAwesome5 } from '@expo/vector-icons'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -10,6 +10,7 @@ function AccountScreen(){
         <View
         style={styles.innerContainer}>
         <View style={styles.profile}>
+            <Image style={styles.person} source={require('../assets/person.jpg')}/>
         </View>
         <View style={styles.widgetSection}>
         <TouchableOpacity style={styles.widget}>
@@ -101,6 +102,12 @@ const styles = StyleSheet.create({
     widgetSection: {
         marginTop: 50,
      
+    },
+    person: {
+        width:'100%',
+        height:'100%',
+        borderRadius:"100%",
+        borderWidth:3
     }
 })
 
