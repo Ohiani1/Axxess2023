@@ -1,14 +1,16 @@
-import {Platform, View, Button, StyleSheet, Text, TouchableOpacity, Alert} from 'react-native';
+import {Platform, View, Button, StyleSheet, Text, TouchableOpacity, Alert, Modal} from 'react-native';
 import {useState} from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { FontAwesome } from '@expo/vector-icons';
+import LottieView from 'lottie-react-native';
 
-function SchedulerScreen(props){
+function SchedulerScreen({navigation}){
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(true);
     const [text, setText] = useState('Empty');
-    const [visible, setVisible] = useState(false);
+    const [uploadVisible, setUploadVisible] = useState(false);
+    const [progress, setProgress] = useState(0);
     const [stringDate, setStringDate] = useState((date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear());
     const [stringTime, setStringTime] = useState(date.getHours() + ':' + date.getMinutes());
 
@@ -20,7 +22,6 @@ function SchedulerScreen(props){
         let tempDate = new Date(currentDate);
         let fDate = (tempDate.getMonth() + 1) + "/" + tempDate.getDate() + "/" +tempDate.getFullYear();
         let fTime =  tempDate.getHours() + ':' + tempDate.getMinutes();
-        setText(fDate + '\n' + fTime)
         setStringDate(fDate);
         setStringTime(fTime);
 
@@ -35,7 +36,7 @@ function SchedulerScreen(props){
             [
                 {
                     text:'Yes',
-                    onPress: () => setVisible(true)
+                    onPress: () => setUploadVisible(true)
                 },
                 {
                     text:'Cancel',
@@ -70,12 +71,23 @@ function SchedulerScreen(props){
                     is24Hour={true}
                     display='default'
                     onChange={onChange}
-
                 />
             </View>
             <TouchableOpacity style={styles.bookButton} onPress={showAlert}>
                 <Text style={{fontWeight: 'bold', fontSize:23, color:'white'}}>BOOK</Text>
             </TouchableOpacity>
+
+            <Modal visible={uploadVisible}>
+                <View style={styles.modalContainer}>
+                    <LottieView
+                            autoPlay
+                            loop={false}
+                            onAnimationFinish={()=> navigation.navigate('Chat')}
+                            source={require('../animations/hitCrsLRmd.json')}
+                            style={styles.animation}
+                    />
+                </View>
+            </Modal>
             
         </View>
 
@@ -99,6 +111,14 @@ const styles = StyleSheet.create({
         marginTop: 50,
         justifyContent:'center',
         alignItems:'center'
+    },
+    modalContainer: {
+        alignItems:'center',
+        flex:1,
+        justifyContent:'center'
+    },
+    animation: {
+        width: 300
     }
 })
 export default SchedulerScreen;

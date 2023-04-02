@@ -5,9 +5,8 @@ import RadioButtonGroup, { RadioButtonItem } from 'expo-radio-button'
 import Checkbox from 'expo-checkbox'
 
 
-export default function Profile(){
+export default function ProfileScreen(){
 
- 
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [sex, setSex ] = useState("Male")

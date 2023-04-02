@@ -40,6 +40,7 @@ function ChatScreen(props){
     const [recording, setRecording] = useState(null);
     const [isFetching, setIsFetching] = useState(false);
     const [isRecording, setIsRecording] = useState(false);
+    const [siri, setSiri] = useState(false);
   
     const deleteRecordingFile = async () => {
       try {
@@ -138,12 +139,12 @@ function ChatScreen(props){
   };
   
   const handleOnPressIn = () => {
-      onpress();
-      startRecording();
+    onpress();  
+    startRecording();
   };
   
   const handleOnPressOut = () => {
-    pressOut();
+    pressOut()
     stopRecording();
     getTranscription();
   };
@@ -156,12 +157,12 @@ function ChatScreen(props){
             </SafeAreaView>
             <Text style={styles.smallText}>Welcome!</Text>
             <View style={styles.container}>
-
                 <LottieView
-                ref={animation}
-                style={{width:'110%', marginBottom:"-70%", marginTop: "-20%"}}
-                source={require('../animations/audioLines.json')}
+                    ref={animation}
+                    style={{width:"150%"}}
+                    source={require('../animations/53476-siri.json')}
                 />
+                       
                 <TouchableOpacity style={styles.record}
                 onPressIn={handleOnPressIn}
                 onPressOut={handleOnPressOut}
