@@ -40,16 +40,31 @@ function ChatScreen(props){
     const [recording, setRecording] = useState(null);
     const [isFetching, setIsFetching] = useState(false);
     const [isRecording, setIsRecording] = useState(false);
-    const [siri, setSiri] = useState(false);
+    const [sound, setSound] = useState(null);
   
-    const deleteRecordingFile = async () => {
-      try {
-          const info = await FileSystem.getInfoAsync(recording.getURI());
-          await FileSystem.deleteAsync(info.uri)
-      } catch(error) {
-          console.log("There was an error deleting recording file", error);
-      }
+    async function playSound(soundFile) {
+  
+      console.log('Loading sound...')
+  
+      const { sound } = await Audio.Sound.createAsync({uri: soundFile})
+  
+      setSound(sound)
+      
+      console.log('Playing Sound')
+  
+      await sound.playAsync()
+  
     }
+  
+    useEffect(() => {
+      return sound ? () => {
+        console.log('Unloading Sound')
+        sound.unloadAsync()
+      }
+      : undefined
+    }, [sound])
+  
+    const [siri, setSiri] = useState(false);
   
     const getTranscription = async () => {
   
@@ -67,15 +82,19 @@ function ChatScreen(props){
           });
   
           console.log(formData)
-          /*
-          const response = await fetch(config.CLOUD_FUNCTION_URL, {
+          const response = await fetch('https://donna-enabled-majority-re.trycloudflare.com/stt', {
               method: 'POST',
               body: formData
           });
+
           const data = await response.json();
-          */
-          //console.log(data);
-         //setQuery(data.transcript);
+
+          url = data.url
+
+          console.log(url);
+
+          playSound(url)
+
       } catch(error) {
           console.log('There was an error reading file', error);
       }
